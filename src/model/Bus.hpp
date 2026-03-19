@@ -26,7 +26,7 @@
 
 class Bus {
   unsigned                     m_width;
-  std::shared_ptr<Node const>  m_nodes;
+  std::shared_ptr<Node const[]>  m_nodes;
 
 private:
   static unsigned computeBitWidth(unsigned  val) {
@@ -49,15 +49,15 @@ public:
   }
   Bus(unsigned const  width, Node const* nodes)
     : m_width(width), m_nodes(nodes) {}
-  Bus(unsigned const  width, std::shared_ptr<Node const> nodes)
-    : m_width(width), m_nodes(nodes) {}
+  Bus(unsigned const  width, std::shared_ptr<Node const[]> nodes)
+    : m_width(width), m_nodes(std::move(nodes)) {}
   ~Bus() {}
 
 public:
   unsigned width() const { return  m_width; }
 
   Node operator[](unsigned const  ofs) const {
-    return (ofs >= m_width)? Node(Node::BOT) : m_nodes.get()[ofs];
+    return (ofs >= m_width)? Node(Node::BOT) : m_nodes[ofs];
   }
   Bus operator()(unsigned const  beg, unsigned const  end) const {
     if(end < beg)  return  Bus();
