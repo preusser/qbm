@@ -19,8 +19,10 @@
  ****************************************************************************/
 #include "Result.hpp"
 
+#include <array>
+
 Result::operator char const* () const {
-    static char const* const  TEXTS[] = {
+    static constexpr std::array<char const*, 5> TEXTS = {
         "UNKNOWN", "SAT", "UNSAT", "TIMEOUT", "SPACEOUT"
     };
     unsigned const  r = m_val / 10;

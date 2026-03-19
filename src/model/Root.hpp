@@ -31,9 +31,9 @@
 class CompDecl;
 class Root {
 public:
-  static int const  FIRST_CONFIG =          2;
-  static int const  FIRST_INPUT  = 0x3FFF0000;
-  static int const  FIRST_SIGNAL = 0x40000000;
+  static constexpr int  FIRST_CONFIG =          2;
+  static constexpr int  FIRST_INPUT  = 0x3FFF0000;
+  static constexpr int  FIRST_SIGNAL = 0x40000000;
 
 private:
   Scope  m_top;

@@ -23,6 +23,7 @@
 #include <string>
 #include <iostream>
 #include <memory>
+#include <array>
 
 class ConstExpression;
 class NameExpression;
@@ -87,7 +88,9 @@ public:
 class UniExpression : public Expression {
 public:
   enum class Op { NOT, NEG, LD };
-  static std::array<char const *const, 4>  OPS;
+  static inline constexpr std::array<char const*, 4>  OPS = {
+    "~", "-", "ld ", "??"
+  };
 
 private:
   Op const  m_op;
@@ -109,7 +112,9 @@ public:
 class BiExpression : public Expression {
 public:
   enum class Op { AND, OR, XOR, ADD, SUB, MUL, DIV, MOD, POW, SEL, CAT };
-  static std::array<char const *const, 12>  OPS;
+  static inline constexpr std::array<char const*, 12>  OPS = {
+    "&", "|", "^", "+", "-", "*", "/", "%", "**", "@", "#", "??"
+  };
 
 private:
   Op const  m_op;

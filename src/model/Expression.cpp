@@ -18,7 +18,6 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ****************************************************************************/
 #include "Expression.hpp"
-#include <array>
 
 ConstExpression::~ConstExpression() {}
 void ConstExpression::accept(Visitor &vis) const { vis.visit(*this); }
@@ -28,15 +27,9 @@ void NameExpression::accept(Visitor &vis) const { vis.visit(*this); }
 
 UniExpression::~UniExpression() {}
 void UniExpression::accept(Visitor &vis) const { vis.visit(*this); }
-std::array<char const *const, 4>  UniExpression::OPS = {
-  "~", "-", "ld ", "??"
-};
 
 BiExpression::~BiExpression() {}
 void BiExpression::accept(Visitor &vis) const { vis.visit(*this); }
-std::array<char const *const, 12>  BiExpression::OPS = {
-  "&", "|", "^", "+", "-", "*", "/", "%", "**", "@", "#", "??"
-};
 
 CondExpression::~CondExpression() {}
 void CondExpression::accept(Visitor &vis) const { vis.visit(*this); }

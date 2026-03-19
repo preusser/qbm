@@ -22,8 +22,8 @@
 
 class Node {
 public:
-  static int const  TOP =  1;
-  static int const  BOT = -1;
+  static constexpr int  TOP =  1;
+  static constexpr int  BOT = -1;
 
 private:
   unsigned  m_val;
