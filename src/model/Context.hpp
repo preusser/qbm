@@ -25,6 +25,7 @@
 #include "CompDecl.hpp"
 #include "Statement.hpp"
 
+#include <initializer_list>
 #include <map>
 
 class Expression;
@@ -55,6 +56,7 @@ public:
 public:
   Root&  root()  { return  m_root; }
   Scope& scope() { return  m_scope; }
+  unsigned allocateSubscopeId() { return m_subcnt++; }
 
 public:
   Bus allocateConfig(unsigned  width) { return  m_root.allocateConfig(width); }
@@ -62,19 +64,8 @@ public:
   Bus allocateSignal(unsigned  width) { return  m_root.allocateSignal(width); }
 
 public:
-  void addClause(int const *beg, int const *end) { m_root.addClause(beg, end); }
-  void addClause(int a) {
-    std::array<int const, 1>  clause{a};
-    addClause(clause.begin(), clause.end());
-  }
-  void addClause(int a, int b) {
-    std::array<int const, 2>  clause{a, b};
-    addClause(clause.begin(), clause.end());
-  }
-  void addClause(int a, int b, int c) {
-    std::array<int const, 3>  clause{a, b, c};
-    addClause(clause.begin(), clause.end());
-  }
+  void addClause(int const *beg, int const *end)         { m_root.addClause(beg, end); }
+  void addClause(std::initializer_list<int> const  lits) { addClause(lits.begin(), lits.end()); }
 
 public:
   void compile(std::string const &name, CompDecl const &comp) {

@@ -125,29 +125,29 @@ namespace {
       std::function<void(Node, Node, Node)>  op;
       switch(expr.op()) {
       case BiExpression::Op::AND:
-	op = [this](Node y, Node a, Node b) {
-	  m_ctx.addClause(y, -a, -b);
-	  m_ctx.addClause(-y, a);
-	  m_ctx.addClause(-y, b);
-	};
-	break;
+        op = [this](Node y, Node a, Node b) {
+          m_ctx.addClause({ y, -a, -b});
+          m_ctx.addClause({-y,  a    });
+          m_ctx.addClause({-y,  b    });
+        };
+        break;
 
       case BiExpression::Op::OR:
-	op = [this](Node y, Node a, Node b) {
-	  m_ctx.addClause(-y, a, b);
-	  m_ctx.addClause(y, -a);
-	  m_ctx.addClause(y, -b);
-	};
-	break;
+        op = [this](Node y, Node a, Node b) {
+          m_ctx.addClause({-y,  a,  b});
+          m_ctx.addClause({ y, -a    });
+          m_ctx.addClause({ y, -b    });
+        };
+        break;
 
       case BiExpression::Op::XOR:
-	op = [this](Node y, Node a, Node b) {
-	  m_ctx.addClause(-y, -a, -b);
-	  m_ctx.addClause(-y,  a,  b);
-	  m_ctx.addClause( y, -a,  b);
-	  m_ctx.addClause( y,  a, -b);
-	};
-	break;
+        op = [this](Node y, Node a, Node b) {
+          m_ctx.addClause({-y, -a, -b});
+          m_ctx.addClause({-y,  a,  b});
+          m_ctx.addClause({ y, -a,  b});
+          m_ctx.addClause({ y,  a, -b});
+        };
+        break;
 
       case BiExpression::Op::SEL: {
 	m_val = m_ctx.allocateSignal(1);
@@ -181,7 +181,7 @@ namespace {
 
 	// Tie unused selector bits to BOT
 	for(unsigned  i = width; i < rhs.width(); i++) {
-	  m_ctx.addClause(-rhs[i]);
+		m_ctx.addClause({-rhs[i]});
 	}
 	return;
       }
@@ -211,10 +211,10 @@ namespace {
 
       Bus const  res = m_ctx.allocateSignal(std::max(std::max(cond.width(), pos.width()), neg.width()));
       for(unsigned  i = res.width(); i-- > 0;) {
-	m_ctx.addClause(-cond[i], -pos[i],  res[i]);
-	m_ctx.addClause(-cond[i],  pos[i], -res[i]);
-	m_ctx.addClause( cond[i], -neg[i],  res[i]);
-	m_ctx.addClause( cond[i],  neg[i], -res[i]);
+        m_ctx.addClause({-cond[i], -pos[i],  res[i]});
+        m_ctx.addClause({-cond[i],  pos[i], -res[i]});
+        m_ctx.addClause({ cond[i], -neg[i],  res[i]});
+        m_ctx.addClause({ cond[i],  neg[i], -res[i]});
       }
       m_val = res;
     }

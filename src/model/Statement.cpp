@@ -58,8 +58,8 @@ void Equation::execute(Context &ctx) const {
   for(unsigned  i = std::max(lhs.width(), rhs.width()); i-- > 0;) {
     int const  a = lhs[i];
     int const  b = rhs[i];
-    ctx.addClause( a, -b);
-    ctx.addClause(-a,  b);
+    ctx.addClause({ a, -b});
+    ctx.addClause({-a,  b});
   }
 }
 
@@ -104,11 +104,12 @@ Generate::~Generate() {}
 void Generate::execute(Context &ctx) const {
   int const  lo = ctx.computeConstant(*m_lo);
   int const  hi = ctx.computeConstant(*m_hi);
+  unsigned const  block = ctx.allocateSubscopeId();
 
   std::string const& var = m_var;
   for(int  i = lo; i <= hi; i++) {
     std::stringstream  name;
-    name << i << '.';
+    name << "gen" << block << ':' << i << '.';
     InnerContext  local(ctx, name.str());
     local.defineConstant(var, i);
     for(std::shared_ptr<Statement const> const& stmt : m_body) {

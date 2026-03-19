@@ -18,6 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ****************************************************************************/
 #include "Expression.hpp"
+#include <array>
 
 ConstExpression::~ConstExpression() {}
 void ConstExpression::accept(Visitor &vis) const { vis.visit(*this); }
