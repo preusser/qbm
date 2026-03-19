@@ -147,7 +147,7 @@ public:
     m_connects.emplace_back(expr);
   }
   Expression const& getConnection(unsigned const  idx) const {
-    return *m_params[idx];
+    return *m_connects[idx];
   }
 
   //- Execution
