@@ -236,6 +236,13 @@ private:
 	}
 	return  c;
 
+      case '!':
+  if(in->peek() == '=') {
+    in->ignore();
+    return  NOTEQ;
+  }
+  goto  err;
+
       case '<':
       case '>':
       case '(':
@@ -355,7 +362,7 @@ private:
 %%
 %left  POWER
 %token NUMBER IDENT
-%token CHOOSE COMPONENT CONFIG CONSTANT END FOR GENERATE LD MAPSTO SIGNAL THROUGH
+%token CHOOSE COMPONENT CONFIG CONSTANT END FOR GENERATE LD MAPSTO NOTEQ SIGNAL THROUGH
 %start comp_decl
 %%
 comp_decl_start : COMPONENT IDENT {
@@ -406,6 +413,7 @@ stmt	: CONSTANT IDENT '=' expr {
         | CONFIG bus { $$ = std::make_shared<ConfigDecl>($2.name(), $2.width()); }
 	| SIGNAL bus { $$ = std::make_shared<SignalDecl>($2.name(), $2.width()); }
         | expr '=' expr { $$ = std::make_shared<Equation>($1.expr(), $3.expr()); }
+  | expr NOTEQ expr { $$ = std::make_shared<InEquation>($1.expr(), $3.expr()); }
         | inst_out ')' { $$ = $1; }
 	| generate END { $$ = $1; }
 

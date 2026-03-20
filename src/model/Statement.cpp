@@ -63,6 +63,36 @@ void Equation::execute(Context &ctx) const {
   }
 }
 
+InEquation::~InEquation() {}
+void InEquation::dump(std::ostream &out) const {
+  out << *m_lhs << " != " << *m_rhs;
+}
+void InEquation::execute(Context &ctx) const {
+  Bus const  lhs = ctx.computeBus(*m_lhs);
+  Bus const  rhs = ctx.computeBus(*m_rhs);
+  unsigned const  width = std::max(lhs.width(), rhs.width());
+
+  Bus const  diff = ctx.allocateSignal(width);
+  std::unique_ptr<int[]>  disjunction(new int[width]);
+
+  for(unsigned  i = 0; i < width; i++) {
+    int const  a = lhs[i];
+    int const  b = rhs[i];
+    int const  d = diff[i];
+
+    // d <-> (a XOR b)
+    ctx.addClause({-d, -a, -b});
+    ctx.addClause({-d,  a,  b});
+    ctx.addClause({ d, -a,  b});
+    ctx.addClause({ d,  a, -b});
+
+    disjunction[i] = d;
+  }
+
+  // Require at least one bit to differ.
+  ctx.addClause(disjunction.get(), disjunction.get()+width);
+}
+
 Instantiation::~Instantiation() {}
 void Instantiation::dump(std::ostream &out) const {
   out << m_label << " : " << m_decl.name();

@@ -108,6 +108,21 @@ public:
   void execute(Context &ctx) const;
 };
 
+class InEquation : public Statement {
+  std::shared_ptr<Expression const>  m_lhs;
+  std::shared_ptr<Expression const>  m_rhs;
+
+public:
+  InEquation(std::shared_ptr<Expression const>  lhs,
+	     std::shared_ptr<Expression const>  rhs)
+    : m_lhs(lhs), m_rhs(rhs) {}
+  ~InEquation();
+
+public:
+  void dump(std::ostream &out) const;
+  void execute(Context &ctx) const;
+};
+
 //- Structural Instantiation -------------------------------------------------
 class CompDecl;
 class Instantiation : public Statement {

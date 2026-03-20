@@ -53,11 +53,12 @@ enum {
   GENERATE = 265,
   LD = 266,
   MAPSTO = 267,
-  SIGNAL = 268,
-  THROUGH = 269,
+  NOTEQ = 268,
+  SIGNAL = 269,
+  THROUGH = 270,
 };
 private:
-enum { YYINTERN = 270 };
+enum { YYINTERN = 271 };
 static unsigned short const  yyintern[];
 static char const    *const  yyterms[];
 
@@ -68,7 +69,7 @@ static char const    *const  yyrules [];
 
 private:
 static unsigned short const  yygoto  [][19];
-static signed   short const  yyaction[][36];
+static signed   short const  yyaction[][37];
 };
 
 #endif
