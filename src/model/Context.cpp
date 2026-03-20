@@ -107,6 +107,7 @@ namespace {
       m_val = m_ctx.resolveBus(expr.name());
     }
     void visit(UniExpression const &expr) override {
+      expr.arg().accept(*this);
       switch(expr.op()) {
       case UniExpression::Op::NOT:
 	m_val = ~m_val;
