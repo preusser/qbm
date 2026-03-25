@@ -25,6 +25,8 @@
 #include <iostream>
 #include <sstream>
 #include <algorithm>
+#include <cstdlib>
+
 
 Root::Root(CompDecl const &decl, std::vector<int> const &generics)
   : m_top(""),
@@ -183,6 +185,8 @@ void Root::dumpQDimacs(std::ostream &out) const {
 Result Root::solve() {
   if(m_res != QUANTOR_RESULT_UNKNOWN)  return  m_res;
 
+  // Ensure complete return of configuration assignment
+  setenv("QUANTOR_RESOLVE_EXPORTED", "0", 1);
   auto const  compact = varCompactor();
   qbm::Quantor  q;
   std::cout << "using Quantor_" << q.version() << " / " << q.backend() << std::endl;
