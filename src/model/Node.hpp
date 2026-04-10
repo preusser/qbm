@@ -29,7 +29,7 @@ private:
   unsigned  m_val;
 
 public:
-  constexpr Node()                : m_val(  0)     {}
+  constexpr Node()                : m_val(BOT)     {}
   constexpr Node(Node const &o)   : m_val(o.m_val) {}
   constexpr Node(int  const  val) : m_val(val)     {}
 
