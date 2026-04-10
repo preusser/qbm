@@ -59,13 +59,16 @@ public:
 
 class ConstExpression : public Expression {
   int const  m_val;
+  int const  m_width;  // -1: implied minimum, >=0: explicit
 
 public:
-  ConstExpression(int const  val) : m_val(val) {}
+  ConstExpression(int const  val) : m_val(val), m_width(-1) {}
+  ConstExpression(int const  val, int const  width) : m_val(val), m_width(width) {}
   ~ConstExpression();
 
 public:
   int value() const { return  m_val; }
+  int width() const { return  m_width; }
 
 public:
   void accept(Visitor &vis) const;

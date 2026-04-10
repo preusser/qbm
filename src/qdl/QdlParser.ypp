@@ -90,11 +90,14 @@ private:
 
     class Number : public Box {
       unsigned const  m_val;
+      int      const  m_width;  // -1: no explicit width
     public:
-      Number(unsigned const  val) : m_val(val) {}
+      Number(unsigned const  val) : m_val(val), m_width(-1) {}
+      Number(unsigned const  val, int const  width) : m_val(val), m_width(width) {}
       ~Number() {}
     public:
       unsigned value() const { return  m_val; }
+      int      width() const { return  m_width; }
     };
 
     class Expr : public Box {
@@ -151,6 +154,10 @@ private:
       contents.reset(new Number(val));
       return *this;
     }
+    SVal& setNumber(unsigned const  val, int const  width) {
+      contents.reset(new Number(val, width));
+      return *this;
+    }
     SVal& operator=(std::shared_ptr<Expression const> const &val) {
       contents.reset(new Expr(val));
       return *this;
@@ -176,6 +183,9 @@ private:
     }
     unsigned number() const {
       return  static_cast<Number&>(*contents).value();
+    }
+    int numWidth() const {
+      return  static_cast<Number&>(*contents).width();
     }
     std::shared_ptr<Expression const> const& expr() const {
       return  static_cast<Expr&>(*contents).value();
@@ -349,6 +359,26 @@ private:
 	  if(!isdigit(in->peek()))  break;
 	  v = 10*v + (in->get() - '0');
 	}
+	// Check for width-qualified literal: <width>'<value>
+	if(in->peek() == '\'') {
+	  in->get();  // consume '\''
+	  if(isdigit(in->peek())) {
+	    unsigned const  width = v;
+	    v = in->get() - '0';
+	    while(isdigit(in->peek())) {
+	      v = 10*v + (in->get() - '0');
+	    }
+	    // Validate width sufficiency
+	    unsigned  minWidth = 0;
+	    for(unsigned  t = v; t != 0; t >>= 1)  minWidth++;
+	    if(minWidth > width) {
+	      error("Width " + std::to_string(width) + " insufficient for value " + std::to_string(v));
+	    }
+	    sval.setNumber(v, width);
+	    return  NUMBER;
+	  }
+	  in->putback('\'');
+	}
 	sval = v;
 	return  NUMBER;
       }
@@ -468,7 +498,10 @@ bus	: IDENT {
 
 // Expressions
 ex_atom	: NUMBER {
-            $$ = std::make_shared<ConstExpression>($1.number());
+            if($1.numWidth() >= 0)
+              $$ = std::make_shared<ConstExpression>($1.number(), $1.numWidth());
+            else
+              $$ = std::make_shared<ConstExpression>($1.number());
           }
 	| IDENT {
             $$ = std::make_shared<NameExpression>($1.name());

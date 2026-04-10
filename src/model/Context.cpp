@@ -101,7 +101,10 @@ namespace {
 
   public:
     void visit(ConstExpression const &expr) override {
-      m_val = Bus(expr.value());
+      if(expr.width() >= 0)
+	m_val = Bus(expr.value(), expr.width());
+      else
+	m_val = Bus(expr.value());
     }
     void visit(NameExpression const &expr) override {
       m_val = m_ctx.resolveBus(expr.name());

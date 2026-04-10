@@ -42,6 +42,7 @@ void ChooseExpression::accept(Visitor &vis) const { vis.visit(*this); }
 
 
 void ExpressionPrinter::visit(ConstExpression const &expr) {
+  if(expr.width() >= 0)  m_out << expr.width() << '\'';
   m_out << expr.value();
 }
 void ExpressionPrinter::visit(NameExpression const &expr) {
